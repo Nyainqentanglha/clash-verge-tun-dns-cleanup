@@ -2,6 +2,14 @@
 
 一个用于 macOS 的小型 LaunchAgent：在网络设置变化后，清理 Wi-Fi 上特定的手动 DNS 覆盖值。
 
+## 为什么清理
+
+Clash Verge Rev 曾在 macOS TUN 模式把 `114.114.114.114` 写为系统 DNS 覆盖值；[v2.4.6 发布说明](https://github.com/clash-verge-rev/clash-verge-rev/releases/tag/v2.4.6)记录了这一行为。若关闭 TUN 或退出后这个**手动值仍留在 Wi-Fi 设置中**，电脑可能继续使用它，而无法按当前网络的自动 DNS 设置解析域名；不接受该公共 DNS 的网络，以及需要专用 DNS 的内网域名，尤其容易出现解析故障。[v2.5.8 发布说明](https://github.com/clash-verge-rev/clash-verge-rev/releases/tag/v2.5.8)也将“关闭 TUN 后残留 `114.114.114.114` 导致无法解析域名”列为已修复问题。
+
+本工具针对**确认存在上述残留手动值**的情况，把这个精确值清空，使系统可以重新使用网络提供的 DNS。它不是加速 DNS 的通用设置，也不能修复所有代理或解析问题。不要仅因装了 Clash Verge 就安装此任务；先检查 `networksetup -getdnsservers 'Wi-Fi'`，并确认该值并非自己有意设置。
+
+**注意运行时边界：**当前脚本不检查 TUN 是否仍开启。网络偏好变化时，它也可能清除 TUN 正在使用的覆盖值，改变 TUN 的 DNS 接管路径。特别是在新版 Clash Verge 已能自行恢复 DNS 时，应优先使用软件自带的恢复机制；如需使用本工具，应同时验证 TUN 开启和关闭后的 DNS 与访问结果。
+
 ## 作用范围
 
 - 脚本只读取名为 `Wi-Fi` 的网络服务的手动 DNS。
@@ -21,7 +29,7 @@
 
 ## 安装
 
-1. 确认目标机器是 macOS，网络服务名确实为 `Wi-Fi`，并且希望清理上述特定手动 DNS。
+1. 确认目标机器是 macOS，网络服务名确实为 `Wi-Fi`，并已复现关闭 TUN 后该手动 DNS 残留；阅读上面的运行时边界。
 2. 将脚本复制到 `~/.local/bin/clear-clash-verge-tun-dns`，赋予执行权限。
 3. 将 plist 模板中的 `__HOME__` 替换为目标用户的**绝对用户目录**，保存为 `~/Library/LaunchAgents/io.github.clashverge.clear-tun-dns.plist`。不要直接加载未替换的模板。
 4. 先运行 `plutil -lint` 检查新 plist，再用下面的命令加载：
