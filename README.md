@@ -2,6 +2,8 @@
 
 一个用于 macOS 的小型 LaunchAgent：在网络设置变化后，清理 Wi-Fi 上特定的手动 DNS 覆盖值。
 
+按步骤操作请看 [使用说明](USAGE.md)。
+
 ## 为什么清理
 
 Clash Verge Rev 曾在 macOS TUN 模式把 `114.114.114.114` 写为系统 DNS 覆盖值；[v2.4.6 发布说明](https://github.com/clash-verge-rev/clash-verge-rev/releases/tag/v2.4.6)记录了这一行为。若关闭 TUN 或退出后这个**手动值仍留在 Wi-Fi 设置中**，电脑可能继续使用它，而无法按当前网络的自动 DNS 设置解析域名；不接受该公共 DNS 的网络，以及需要专用 DNS 的内网域名，尤其容易出现解析故障。[v2.5.8 发布说明](https://github.com/clash-verge-rev/clash-verge-rev/releases/tag/v2.5.8)也将“关闭 TUN 后残留 `114.114.114.114` 导致无法解析域名”列为已修复问题。
@@ -24,6 +26,7 @@ Clash Verge Rev 曾在 macOS TUN 模式把 `114.114.114.114` 写为系统 DNS �
 
 | 文件 | 用途 |
 | --- | --- |
+| [`USAGE.md`](USAGE.md) | 按步骤检查、运行、安装和卸载 |
 | [`clear-clash-verge-tun-dns`](clear-clash-verge-tun-dns) | 执行精确匹配和清理 |
 | [`io.github.clashverge.clear-tun-dns.plist.template`](io.github.clashverge.clear-tun-dns.plist.template) | 用户级 LaunchAgent 模板 |
 
